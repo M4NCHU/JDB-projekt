@@ -3,6 +3,7 @@ package demo.models;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class Film {
@@ -20,8 +21,35 @@ public class Film {
     @JoinColumn(name = "gatunek_id")
     private Gatunek gatunek;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "film_aktor",
+            joinColumns = @JoinColumn(name = "film_id"),
+            inverseJoinColumns = @JoinColumn(name = "aktor_id"))
+    private Set<Aktor> aktorzy = new HashSet<>();
+
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "film_rezyser",
+            joinColumns = @JoinColumn(name = "film_id"),
+            inverseJoinColumns = @JoinColumn(name = "rezyser_id"))
+    private Set<Rezyser> rezyserzy = new HashSet<>();
+
     @OneToMany(mappedBy = "film", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Ocena> opinie = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "studio_filmowe_id")
+    private StudioFilmowe studioFilmowe;
+
+    private Double sredniaOcena;
+
+    public Double getSredniaOcena() {
+        return sredniaOcena;
+    }
+
+    public void setSredniaOcena(Double sredniaOcena) {
+        this.sredniaOcena = sredniaOcena;
+    }
 
     public Long getId() {
         return id;
@@ -90,4 +118,46 @@ public class Film {
     public String getNazwaGatunku() {
         return gatunek != null ? gatunek.getNazwa() : "";
     }
+
+    public Set<Aktor> getAktorzy() {
+        return aktorzy;
+    }
+
+    public void setAktorzy(Set<Aktor> aktorzy) {
+        this.aktorzy = aktorzy;
+    }
+
+    public Set<Rezyser> getRezyserzy() {
+        return rezyserzy;
+    }
+
+    public void setRezyserzy(Set<Rezyser> rezyserzy) {
+        this.rezyserzy = rezyserzy;
+    }
+
+    public StudioFilmowe getStudioFilmowe() {
+        return studioFilmowe;
+    }
+
+    public void setStudioFilmowe(StudioFilmowe studioFilmowe) {
+        this.studioFilmowe = studioFilmowe;
+    }
+
+    public String getRezyserzyNazwy() {
+        return rezyserzy.stream()
+                .map(rezyser -> rezyser.getImie() + " " + rezyser.getNazwisko())
+                .collect(Collectors.joining(", "));
+    }
+
+    public String getAktorzyNazwy() {
+        return aktorzy.stream()
+                .map(aktor -> aktor.getImie() + " " + aktor.getNazwisko())
+                .collect(Collectors.joining(", "));
+    }
+
+    public String getNazwaStudiaFilmowego() {
+        return studioFilmowe != null ? studioFilmowe.getNazwa() : "Brak informacji";
+    }
+
+
 }
