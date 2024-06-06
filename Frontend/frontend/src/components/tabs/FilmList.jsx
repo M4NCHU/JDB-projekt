@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import logo from "../../assets/filmy.png"
-
+import logo from "../../assets/filmy.png";
 
 const FilmList = () => {
     const [films, setFilms] = useState([]);
@@ -10,24 +9,34 @@ const FilmList = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [ratings, setRatings] = useState({});
     const [selectedFilm, setSelectedFilm] = useState(null); // State for selected film details
+    const [searchQuery, setSearchQuery] = useState(''); // State for search query
 
     useEffect(() => {
-        const fetchFilms = async () => {
-            try {
-                const response = await axios.get('http://localhost:8081/api/filmy');
-                setFilms(response.data);
-                const initialRatings = response.data.reduce((acc, film) => ({
-                    ...acc,
-                    [film.id]: { ocena: 5, komentarz: '' }
-                }), {});
-                setRatings(initialRatings);
-            } catch (error) {
-                console.error('There was an error fetching the films:', error);
-            }
-        };
-
         fetchFilms();
     }, []);
+
+    const fetchFilms = async () => {
+        try {
+            const response = await axios.get('http://localhost:8081/api/filmy');
+            setFilms(response.data);
+            const initialRatings = response.data.reduce((acc, film) => ({
+                ...acc,
+                [film.id]: { ocena: 5, komentarz: '' }
+            }), {});
+            setRatings(initialRatings);
+        } catch (error) {
+            console.error('There was an error fetching the films:', error);
+        }
+    };
+
+    const fetchFilteredFilms = async (query) => {
+        try {
+            const response = await axios.get(`http://localhost:8081/api/filmy/wyszukaj?tytul=${query}`);
+            setFilms(response.data);
+        } catch (error) {
+            console.error('There was an error fetching the films:', error);
+        }
+    };
 
     const handleRatingChange = (filmId, field, value) => {
         setRatings(prevRatings => ({
@@ -109,11 +118,21 @@ const FilmList = () => {
         }
     };
 
+    const handleSearchChange = (e) => {
+        const query = e.target.value;
+        setSearchQuery(query);
+        if (query) {
+            fetchFilteredFilms(query);
+        } else {
+            fetchFilms();
+        }
+    };
+
     return (
         <div>
             <div className='d-flex justify-content-between align-items-center'>
                 <div className='d-flex flex-row align-items-center'>
-                    <img src={logo} className='image'  alt="" />
+                    <img src={logo} className='image' alt="" />
                     <h1 className="mb-3">Lista Filmów</h1>
                 </div>
                 <div>
@@ -121,6 +140,15 @@ const FilmList = () => {
                         Dodaj Film
                     </button>
                 </div>
+            </div>
+            <div className="mb-3">
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Wyszukaj film po tytule"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                />
             </div>
             {showForm && (
                 <form onSubmit={handleSubmit} className="mb-3">
@@ -152,6 +180,8 @@ const FilmList = () => {
                         <p>{selectedFilm.opis}</p>
                         <p><strong>Rok Wydania:</strong> {selectedFilm.rokWydania}</p>
                         <p><strong>Długość:</strong> {selectedFilm.dlugosc} min</p>
+                        <p><strong>Reżyserzy:</strong> {selectedFilm.rezyserzyNazwy}</p>
+                        <p><strong>Aktorzy:</strong> {selectedFilm.aktorzyNazwy}</p>
                     </div>
                 </div>
             )}
@@ -163,6 +193,8 @@ const FilmList = () => {
                         <th>Opis</th>
                         <th>Rok Wydania</th>
                         <th>Długość</th>
+                        <th>Reżyserzy</th>
+                        <th>Aktorzy</th>
                         <th>Akcje</th>
                         <th>Ocena</th>
                     </tr>
@@ -175,6 +207,8 @@ const FilmList = () => {
                             <td>{film.opis}</td>
                             <td>{film.rokWydania}</td>
                             <td>{film.dlugosc} min</td>
+                            <td>{film.rezyserzyNazwy}</td>
+                            <td>{film.aktorzyNazwy}</td>
                             <td>
                                 <button type='button' className='btn btn-danger' onClick={() => handleDelete(film.id)}>
                                     Usuń

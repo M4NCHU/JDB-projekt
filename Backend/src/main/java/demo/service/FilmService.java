@@ -34,4 +34,8 @@ public class FilmService {
     public void deleteAll() {
         filmRepository.deleteAll();
     }
+
+    public List<Film> findByTytul(String tytul) {
+        return filmRepository.findByTytulContainingIgnoreCase(tytul);
+    }
 }

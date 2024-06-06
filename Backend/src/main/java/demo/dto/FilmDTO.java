@@ -8,9 +8,11 @@ public class FilmDTO {
     private int dlugosc;
     private String plakatURL;
     private String nazwaGatunku;
+    private String rezyserzyNazwy;  // nowe pole
+    private String aktorzyNazwy;
 
     // Constructor
-    public FilmDTO(Long id, String tytul, String opis, int rokWydania, int dlugosc, String plakatURL, String nazwaGatunku) {
+    public FilmDTO(Long id, String tytul, String opis, int rokWydania, int dlugosc, String plakatURL, String nazwaGatunku, String rezyserzyNazwy, String aktorzyNazwy) {
         this.id = id;
         this.tytul = tytul;
         this.opis = opis;
@@ -18,6 +20,8 @@ public class FilmDTO {
         this.dlugosc = dlugosc;
         this.plakatURL = plakatURL;
         this.nazwaGatunku = nazwaGatunku;
+        this.rezyserzyNazwy = rezyserzyNazwy;
+        this.aktorzyNazwy = aktorzyNazwy;
     }
 
     // Getters and setters
@@ -75,5 +79,20 @@ public class FilmDTO {
 
     public void setNazwaGatunku(String nazwaGatunku) {
         this.nazwaGatunku = nazwaGatunku;
+    }
+    public String getRezyserzyNazwy() {
+        return rezyserzyNazwy;
+    }
+
+    public void setRezyserzyNazwy(String rezyserzyNazwy) {
+        this.rezyserzyNazwy = rezyserzyNazwy;
+    }
+
+    public String getAktorzyNazwy() {
+        return aktorzyNazwy;
+    }
+
+    public void setAktorzyNazwy(String aktorzyNazwy) {
+        this.aktorzyNazwy = aktorzyNazwy;
     }
 }

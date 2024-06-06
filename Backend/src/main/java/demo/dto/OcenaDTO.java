@@ -1,34 +1,27 @@
-package demo.models;
+package demo.dto;
 
-import javax.persistence.*;
 import java.util.Date;
 
-@Entity
-public class Ocena {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class OcenaDTO {
     private Long id;
-
     private int ocena;
     private String tresc;
     private Date dataDodania;
     private double wartosc;
-    private String autor; // nowe pole
+    private String autor;
+    private Long filmId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "film_id")
-    private Film film;
+    // Gettery i settery
+    // ...
 
-    public Ocena() {
-        this.dataDodania = new Date(); // przypisanie aktualnej daty
-    }
-
-    public double getWartosc() {
-        return wartosc;
-    }
-
-    public void setWartosc(double wartosc) {
+    public OcenaDTO(Long id, int ocena, String tresc, Date dataDodania, double wartosc, String autor, Long filmId) {
+        this.id = id;
+        this.ocena = ocena;
+        this.tresc = tresc;
+        this.dataDodania = dataDodania;
         this.wartosc = wartosc;
+        this.autor = autor;
+        this.filmId = filmId;
     }
 
     public Long getId() {
@@ -63,6 +56,14 @@ public class Ocena {
         this.dataDodania = dataDodania;
     }
 
+    public double getWartosc() {
+        return wartosc;
+    }
+
+    public void setWartosc(double wartosc) {
+        this.wartosc = wartosc;
+    }
+
     public String getAutor() {
         return autor;
     }
@@ -71,11 +72,12 @@ public class Ocena {
         this.autor = autor;
     }
 
-    public Film getFilm() {
-        return film;
+    public Long getFilmId() {
+        return filmId;
     }
 
-    public void setFilm(Film film) {
-        this.film = film;
+    public void setFilmId(Long filmId) {
+        this.filmId = filmId;
     }
+
 }

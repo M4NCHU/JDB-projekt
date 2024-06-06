@@ -16,6 +16,7 @@ public class Film {
     private int rokWydania;
     private int dlugosc;
     private String plakatURL;
+    private Double sredniaOcena;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gatunek_id")
@@ -26,7 +27,6 @@ public class Film {
             joinColumns = @JoinColumn(name = "film_id"),
             inverseJoinColumns = @JoinColumn(name = "aktor_id"))
     private Set<Aktor> aktorzy = new HashSet<>();
-
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "film_rezyser",
@@ -40,16 +40,6 @@ public class Film {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "studio_filmowe_id")
     private StudioFilmowe studioFilmowe;
-
-    private Double sredniaOcena;
-
-    public Double getSredniaOcena() {
-        return sredniaOcena;
-    }
-
-    public void setSredniaOcena(Double sredniaOcena) {
-        this.sredniaOcena = sredniaOcena;
-    }
 
     public Long getId() {
         return id;
@@ -97,6 +87,14 @@ public class Film {
 
     public void setPlakatURL(String plakatURL) {
         this.plakatURL = plakatURL;
+    }
+
+    public Double getSredniaOcena() {
+        return sredniaOcena;
+    }
+
+    public void setSredniaOcena(Double sredniaOcena) {
+        this.sredniaOcena = sredniaOcena;
     }
 
     public Gatunek getGatunek() {
@@ -158,6 +156,4 @@ public class Film {
     public String getNazwaStudiaFilmowego() {
         return studioFilmowe != null ? studioFilmowe.getNazwa() : "Brak informacji";
     }
-
-
 }

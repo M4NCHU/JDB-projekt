@@ -29,15 +29,31 @@ public class FilmController {
                 film.getRokWydania(),
                 film.getDlugosc(),
                 film.getPlakatURL(),
-                film.getNazwaGatunku()
+                film.getNazwaGatunku(),
+                film.getRezyserzyNazwy(),
+                film.getAktorzyNazwy()
         )).collect(Collectors.toList());
         return new ResponseEntity<>(filmDTOs, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Film> getFilmDetails(@PathVariable Long id) {
+    public ResponseEntity<FilmDTO> getFilmDetails(@PathVariable Long id) {
         Film film = filmService.findById(id).orElse(null);
-        return film != null ? new ResponseEntity<>(film, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (film == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        FilmDTO filmDTO = new FilmDTO(
+                film.getId(),
+                film.getTytul(),
+                film.getOpis(),
+                film.getRokWydania(),
+                film.getDlugosc(),
+                film.getPlakatURL(),
+                film.getNazwaGatunku(),
+                film.getRezyserzyNazwy(),
+                film.getAktorzyNazwy()
+        );
+        return new ResponseEntity<>(filmDTO, HttpStatus.OK);
     }
 
     @GetMapping("/zapiszFilm")
@@ -78,5 +94,22 @@ public class FilmController {
     public ResponseEntity<Void> deleteFilm(@PathVariable Long id) {
         filmService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/wyszukaj")
+    public ResponseEntity<List<FilmDTO>> searchFilmsByTitle(@RequestParam String tytul) {
+        List<Film> films = filmService.findByTytul(tytul);
+        List<FilmDTO> filmDTOs = films.stream().map(film -> new FilmDTO(
+                film.getId(),
+                film.getTytul(),
+                film.getOpis(),
+                film.getRokWydania(),
+                film.getDlugosc(),
+                film.getPlakatURL(),
+                film.getNazwaGatunku(),
+                film.getRezyserzyNazwy(),
+                film.getAktorzyNazwy()
+        )).collect(Collectors.toList());
+        return new ResponseEntity<>(filmDTOs, HttpStatus.OK);
     }
 }
